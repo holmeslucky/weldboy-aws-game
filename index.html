@@ -1,758 +1,158 @@
-
-
-
-  
-  
-  WeldBoy – AWS Welding Arcade
-  
-  
-  
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>WeldBoy – AWS Welding Arcade</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter&family=Press+Start+2P&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
     body {
-      font-family 'Inter', sans-serif;
-      background linear-gradient(135deg, #ff007a, #00ddeb);
-      color #fff;
-      margin 0;
-      padding 20px;
-      text-align center;
-      overflow-x hidden;
-      animation pulse-bg 10s ease-in-out infinite;
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(135deg, #ff007a, #00ddeb);
+      color: #fff;
+      margin: 0;
+      padding: 20px;
+      text-align: center;
+      overflow-x: hidden;
+      animation: pulse-bg 10s ease-in-out infinite;
     }
 
-precode@keyframes pulse-bg {
-  0%, 100% { filter brightness(100%); }
-  50% { filter brightness(120%); }
-}
+    @keyframes pulse-bg {
+      0%, 100% { filter: brightness(100%); }
+      50% { filter: brightness(120%); }
+    }
 
-.game-container {
-  max-width 1200px;
-  margin 0 auto;
-  background #1a1a1a;
-  color #fff;
-  padding 30px;
-  border-radius 16px;
-  box-shadow 0 0 30px rgba(255, 0, 122, 0.7), 0 0 60px rgba(0, 221, 235, 0.5);
-  border 3px solid #ffd700;
-}
+    .game-container {
+      max-width: 1000px;
+      margin: 0 auto;
+      background: #1a1a1a;
+      color: #fff;
+      padding: 30px;
+      border-radius: 16px;
+      box-shadow: 0 0 30px rgba(255, 0, 122, 0.7), 0 0 60px rgba(0, 221, 235, 0.5);
+      border: 3px solid #ffd700;
+    }
 
-h1 {
-  font-family &#39;Press Start 2P&#39;, cursive;
-  font-size 2em;
-  color #ffd700;
-  text-shadow 0 0 10px #ff007a;
-  margin-bottom 20px;
-  animation neon-flicker 2s infinite;
-}
+    h1 {
+      font-family: 'Press Start 2P', cursive;
+      font-size: 2em;
+      color: #ffd700;
+      text-shadow: 0 0 10px #ff007a;
+      margin-bottom: 20px;
+    }
 
-@keyframes neon-flicker {
-  0%, 100% { opacity 1; }
-  50% { opacity 0.8; }
-}
+    .stats {
+      display: flex;
+      justify-content: space-around;
+      font-family: 'Press Start 2P', cursive;
+      margin-bottom: 20px;
+      background: #333;
+      padding: 10px;
+      border-radius: 8px;
+      border: 2px solid #00ddeb;
+    }
 
-.stats {
-  display flex;
-  justify-content space-around;
-  margin 20px 0;
-  font-family &#39;Press Start 2P&#39;, cursive;
-  font-size 1em;
-  background #333;
-  padding 15px;
-  border-radius 10px;
-  border 2px solid #00ddeb;
-  box-shadow 0 0 15px rgba(0, 221, 235, 0.6);
-}
+    .document-area {
+      background: #2a2a2a;
+      border: 2px dashed #ffd700;
+      padding: 20px;
+      border-radius: 10px;
+      margin-bottom: 20px;
+    }
 
-.game-area {
-  display flex;
-  justify-content space-between;
-  flex-wrap wrap;
-  gap 10px;
-}
+    .current-document {
+      background: #fff;
+      color: #000;
+      padding: 20px;
+      border-radius: 10px;
+    }
 
-.cabinet {
-  flex 1 1 11%;
-  background #ff007a;
-  color #fff;
-  padding 15px;
-  margin 5px;
-  border-radius 12px;
-  cursor pointer;
-  transition transform 0.3s ease, box-shadow 0.3s ease;
-  font-family &#39;Inter&#39;, sans-serif;
-  font-weight 600;
-  text-align center;
-  box-shadow 0 0 15px rgba(255, 0, 122, 0.7);
-  position relative;
-}
+    .controls {
+      margin: 20px 0;
+    }
 
-.cabinethover {
-  background #ffd700;
-  color #1a1a1a;
-  transform scale(1.1);
-  box-shadow 0 0 20px rgba(255, 215, 0, 0.9);
-}
+    .btn {
+      padding: 10px 20px;
+      font-family: 'Press Start 2P', cursive;
+      margin: 0 10px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
 
-.cabinethover .tooltip {
-  display block;
-}
+    .btn-start { background: #00ddeb; color: #000; }
+    .btn-pause { background: #ff007a; color: #fff; }
+    .btn-reset { background: #ffd700; color: #000; }
 
-.cabinet.drag-over {
-  background #00ddeb;
-  box-shadow 0 0 25px rgba(0, 221, 235, 0.9);
-}
+    #feedback {
+      margin-top: 20px;
+      font-family: 'Press Start 2P', cursive;
+    }
 
-.tooltip {
-  display none;
-  position absolute;
-  top -50px;
-  left 50%;
-  transform translateX(-50%);
-  background #2a2a2a;
-  color #fff;
-  padding 5px 10px;
-  border-radius 5px;
-  font-size 0.8em;
-  z-index 10;
-  box-shadow 0 0 10px rgba(0, 221, 235, 0.7);
-}
+    canvas {
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div class="game-container">
+    <h1>🕹️ WeldBoy – AWS Welding Arcade</h1>
 
-.document-area {
-  flex 1 1 100%;
-  padding 25px;
-  margin-top 20px;
-  border 3px dashed #ffd700;
-  border-radius 12px;
-  min-height 250px;
-  background #2a2a2a;
-  color #fff;
-  transition border-color 0.3s ease, background 0.3s ease;
-}
+    <div class="stats">
+      <div>Score: <span id="score">0</span></div>
+      <div>Time: <span id="timer">60</span></div>
+      <div>Level: <span id="level">1</span></div>
+      <div>Cert: <span id="cert">1G</span></div>
+    </div>
 
-.document-area.drag-over {
-  border-color #00ddeb;
-  background #333;
-  box-shadow 0 0 20px rgba(0, 221, 235, 0.7);
-}
+    <div class="document-area">
+      <div class="current-document">
+        <div id="doc-icon">📄</div>
+        <div id="doc-title">Press Start to Play!</div>
+        <div id="doc-type"></div>
+      </div>
+    </div>
 
-.current-document {
-  margin-top 20px;
-  background #fff;
-  color #1a1a1a;
-  padding 25px;
-  border-radius 10px;
-  box-shadow 0 0 15px rgba(255, 0, 122, 0.5);
-  display inline-block;
-  cursor grab;
-  transition transform 0.3s ease;
-  font-family &#39;Inter&#39;, sans-serif;
-}
+    <div class="controls">
+      <button class="btn btn-start" onclick="startGame()">Start</button>
+      <button class="btn btn-pause" onclick="pauseGame()">Pause</button>
+      <button class="btn btn-reset" onclick="resetGame()">Reset</button>
+    </div>
 
-.current-documentactive {
-  cursor grabbing;
-  transform scale(0.95);
-}
+    <div id="feedback"></div>
 
-.weld-symbol {
-  width 50px;
-  height 50px;
-  margin 0 auto 10px;
-}
+    <canvas id="scoreChart"></canvas>
+  </div>
 
-.controls {
-  margin 20px 0;
-  display flex;
-  justify-content center;
-  gap 15px;
-}
-
-.btn {
-  padding 12px 30px;
-  font-family &#39;Press Start 2P&#39;, cursive;
-  font-size 0.9em;
-  color #fff;
-  border none;
-  border-radius 8px;
-  cursor pointer;
-  transition transform 0.2s ease, box-shadow 0.2s ease;
-  text-shadow 0 0 5px #000;
-}
-
-.btn-start { background #00ddeb; box-shadow 0 0 15px rgba(0, 221, 235, 0.7); }
-.btn-starthover { background #00aacc; transform scale(1.1); box-shadow 0 0 20px rgba(0, 221, 235, 0.9); }
-.btn-pause { background #ff007a; box-shadow 0 0 15px rgba(255, 0, 122, 0.7); }
-.btn-pausehover { background #cc0055; transform scale(1.1); box-shadow 0 0 20px rgba(255, 0, 122, 0.9); }
-.btn-reset { background #ffd700; color #1a1a1a; box-shadow 0 0 15px rgba(255, 215, 0, 0.7); }
-.btn-resethover { background #ccac00; transform scale(1.1); box-shadow 0 0 20px rgba(255, 215, 0, 0.9); }
-
-.feedback {
-  font-family &#39;Press Start 2P&#39;, cursive;
-  font-size 1.1em;
-  margin-top 20px;
-  text-shadow 0 0 10px #ffd700;
-  transition opacity 0.3s ease, transform 0.3s ease;
-  animation bounce 0.5s ease;
-}
-
-@keyframes bounce {
-  0%, 100% { transform translateY(0); }
-  50% { transform translateY(-10px); }
-}
-
-.correct { color #00ddeb; }
-.wrong { color #ff007a; }
-
-.progress-chart {
-  margin-top 20px;
-  max-width 600px;
-  margin-left auto;
-  margin-right auto;
-  background #333;
-  padding 20px;
-  border-radius 12px;
-  border 2px solid #ffd700;
-  box-shadow 0 0 15px rgba(255, 215, 0, 0.6);
-}
-
-.leaderboard {
-  margin-top 20px;
-  max-width 600px;
-  margin-left auto;
-  margin-right auto;
-  background #333;
-  padding 20px;
-  border-radius 12px;
-  border 2px solid #00ddeb;
-  box-shadow 0 0 15px rgba(0, 221, 235, 0.6);
-}
-
-.leaderboard h2 {
-  font-family &#39;Press Start 2P&#39;, cursive;
-  font-size 1.2em;
-  color #ffd700;
-  text-shadow 0 0 10px #ff007a;
-  margin-bottom 15px;
-}
-
-.leaderboard table {
-  width 100%;
-  border-collapse collapse;
-  font-family &#39;Inter&#39;, sans-serif;
-  color #fff;
-}
-
-.leaderboard th, .leaderboard td {
-  padding 10px;
-  text-align left;
-  border-bottom 1px solid #00ddeb;
-}
-
-.leaderboard th {
-  font-weight 600;
-  color #ffd700;
-}
-
-.leaderboard td {
-  color #fff;
-}
-
-.initials-input {
-  display none;
-  margin 20px auto;
-  text-align center;
-}
-
-.initials-input input {
-  padding 10px;
-  font-family &#39;Inter&#39;, sans-serif;
-  font-size 1em;
-  border 2px solid #ffd700;
-  border-radius 8px;
-  background #2a2a2a;
-  color #fff;
-  width 100px;
-  text-align center;
-  text-transform uppercase;
-}
-
-.initials-input button {
-  padding 10px 20px;
-  font-family &#39;Press Start 2P&#39;, cursive;
-  font-size 0.9em;
-  background #00ddeb;
-  color #fff;
-  border none;
-  border-radius 8px;
-  cursor pointer;
-  margin-left 10px;
-  transition transform 0.2s ease;
-}
-
-.initials-input buttonhover {
-  background #00aacc;
-  transform scale(1.1);
-}
-
-@media (max-width 768px) {
-  .game-container { padding 15px; }
-  .cabinet { flex 1 1 22%; margin 5px; }
-  h1 { font-size 1.5em; }
-  .btn { padding 10px 20px; font-size 0.8em; }
-  .stats { font-size 0.9em; }
-  .weld-symbol { width 40px; height 40px; }
-  .leaderboard h2 { font-size 1em; }
-  .leaderboard th, .leaderboard td { font-size 0.9em; padding 8px; }
-}
-
-@media (max-width 480px) {
-  .cabinet { flex 1 1 45%; }
-  .leaderboard th, .leaderboard td { font-size 0.8em; }
-}
-codepre
-p  
-
-
-  
-    🕹️ WeldBoy AWS Welding Arcade
-    
-      Score 0
-      Time 60s
-      Level 1
-      Cert 1G
-    
-
-div class=game-area
-  div class=cabinet data-type=fillet
-    svg class=weld-symbol viewBox=0 0 100 100
-      path d=M20 80 L50 50 L80 80 stroke=#fff stroke-width=5 fill=none
-      path d=M20 80 H80 stroke=#fff stroke-width=5
-    svg
-    Fillet Weld
-    div class=tooltipAWS D1.1, Flat or horizontal weldsdiv
-  div
-  div class=cabinet data-type=groove
-    svg class=weld-symbol viewBox=0 0 100 100
-      path d=M20 80 L50 50 L80 80 stroke=#fff stroke-width=5 fill=none
-      path d=M20 80 H80 stroke=#fff stroke-width=5
-      path d=M50 50 V80 stroke=#fff stroke-width=5
-    svg
-    Groove Weld
-    div class=tooltipAWS D1.1, Deep penetration weldsdiv
-  div
-  div class=cabinet data-type=spot
-    svg class=weld-symbol viewBox=0 0 100 100
-      circle cx=50 cy=80 r=10 fill=#fff
-      path d=M20 80 H80 stroke=#fff stroke-width=5
-    svg
-    Spot Weld
-    div class=tooltipAWS D1.1, Resistance weldingdiv
-  div
-  div class=cabinet data-type=plug
-    svg class=weld-symbol viewBox=0 0 100 100
-      rect x=40 y=70 width=20 height=20 fill=#fff
-      path d=M20 80 H80 stroke=#fff stroke-width=5
-    svg
-    Plug Weld
-    div class=tooltipAWS D1.1, Hole-filled weldsdiv
-  div
-  div class=cabinet data-type=seam
-    svg class=weld-symbol viewBox=0 0 100 100
-      path d=M30 80 Q50 60 70 80 stroke=#fff stroke-width=5 fill=none
-      path d=M20 80 H80 stroke=#fff stroke-width=5
-    svg
-    Seam Weld
-    div class=tooltipAWS D1.1, Continuous weldsdiv
-  div
-  div class=cabinet data-type=stud
-    svg class=weld-symbol viewBox=0 0 100 100
-      circle cx=50 cy=80 r=5 fill=#fff
-      path d=M50 80 V60 stroke=#fff stroke-width=5
-      path d=M20 80 H80 stroke=#fff stroke-width=5
-    svg
-    Stud Weld
-    div class=tooltipAWS D1.1, Fastener weldsdiv
-  div
-  div class=cabinet data-type=backgrinding
-    svg class=weld-symbol viewBox=0 0 100 100
-      path d=M20 80 H80 stroke=#fff stroke-width=5
-      path d=M30 70 Q50 50 70 70 stroke=#fff stroke-width=5 fill=none
-    svg
-    Back Grinding
-    div class=tooltipAWS D1.1, Surface prep for weldsdiv
-  div
-  div class=cabinet data-type=backgouging
-    svg class=weld-symbol viewBox=0 0 100 100
-      path d=M20 80 H80 stroke=#fff stroke-width=5
-      path d=M30 70 C50 40 70 70 70 70 stroke=#fff stroke-width=5 fill=none
-    svg
-    Back Gouging
-    div class=tooltipAWS D1.1, Root removal for weldsdiv
-  div
-
-  div class=document-area id=document-area
-    div id=document class=current-document draggable=true
-      div id=doc-icondiv
-      div id=doc-titlePress Start to Play!div
-      div id=doc-typediv
-    div
-  div
-div
-
-div class=controls
-  button class=btn btn-start onclick=startGame()Startbutton
-  button class=btn btn-pause onclick=pauseGame()Pausebutton
-  button class=btn btn-reset onclick=resetGame()Resetbutton
-div
-
-div id=feedback class=feedbackdiv
-
-div class=initials-input id=initials-input
-  input type=text id=player-initials maxlength=4 placeholder=Initials 
-  button onclick=submitScore()Submitbutton
-div
-
-div class=progress-chart
-  canvas id=scoreChartcanvas
-div
-
-div class=leaderboard
-  h2🏆 High Scoresh2
-  table id=leaderboard-table
-    thead
-      tr
-        thRankth
-        thInitialsth
-        thScoreth
-        thAccuracyth
-        thCert Levelth
-      tr
-    thead
-    tbody id=leaderboard-bodytbody
-  table
-div
-
-  
-
-  
-    const weldingTypes = {
-      fillet [
-        {
-          title Single Fillet Blitz,
-          icon `svg class=weld-symbol viewBox=0 0 100 100path d=M20 80 L50 50 L80 80 stroke=#1a1a1a stroke-width=5 fill=nonepath d=M20 80 H80 stroke=#1a1a1a stroke-width=5svg`,
-          type Fillet,
-          awsRef A2.42020, 7.2,
-          certLevel 1G
-        },
-        {
-          title Double Fillet Zap,
-          icon `svg class=weld-symbol viewBox=0 0 100 100path d=M20 80 L50 50 L80 80 stroke=#1a1a1a stroke-width=5 fill=nonepath d=M20 100 L50 130 L80 100 stroke=#1a1a1a stroke-width=5 fill=nonepath d=M20 80 H80 stroke=#1a1a1a stroke-width=5svg`,
-          type Fillet,
-          awsRef A2.42020, 7.2,
-          certLevel 2G
-        },
-        {
-          title Corner Fillet Crush,
-          icon `svg class=weld-symbol viewBox=0 0 100 100path d=M20 80 L50 50 L80 80 stroke=#1a1a1a stroke-width=5 fill=nonepath d=M20 80 H80 V50 stroke=#1a1a1a stroke-width=5svg`,
-          type Fillet,
-          awsRef A2.42020, 7.2,
-          certLevel 3G
-        },
-        {
-          title Weld-All-Around Fillet,
-          icon `svg class=weld-symbol viewBox=0 0 100 100path d=M20 80 L50 50 L80 80 stroke=#1a1a1a stroke-width=5 fill=nonepath d=M20 80 H80 stroke=#1a1a1a stroke-width=5circle cx=50 cy=80 r=15 fill=none stroke=#1a1a1a stroke-width=5svg`,
-          type Fillet,
-          awsRef A2.42020, 7.2, 8.2.1,
-          certLevel 4G
-        }
-      ],
-      groove [
-        {
-          title V-Groove Blast,
-          icon `svg class=weld-symbol viewBox=0 0 100 100path d=M20 80 L50 50 L80 80 stroke=#1a1a1a stroke-width=5 fill=nonepath d=M20 80 H80 stroke=#1a1a1a stroke-width=5path d=M50 50 V80 stroke=#1a1a1a stroke-width=5svg`,
-          type Groove,
-          awsRef A2.42020, 7.3.2,
-          certLevel 1G
-        },
-        {
-          title Bevel Boom,
-          icon `svg class=weld-symbol viewBox=0 0 100 100path d=M20 80 L50 50 stroke=#1a1a1a stroke-width=5 fill=nonepath d=M20 80 H80 stroke=#1a1a1a stroke-width=5svg`,
-          type Groove,
-          awsRef A2.42020, 7.3.3,
-          certLevel 2G
-        },
-        {
-          title U-Groove Surge,
-          icon `svg class=weld-symbol viewBox=0 0 100 100path d=M20 80 C20 60 50 60 50 60 C50 60 80 60 80 80 stroke=#1a1a1a stroke-width=5 fill=nonepath d=M20 80 H80 stroke=#1a1a1a stroke-width=5svg`,
-          type Groove,
-          awsRef A2.42020, 7.3.4,
-          certLevel 3G
-        },
-        {
-          title J-Groove Jam,
-          icon `svg class=weld-symbol viewBox=0 0 100 100path d=M20 80 C20 60 50 60 50 60 L50 80 stroke=#1a1a1a stroke-width=5 fill=nonepath d=M20 80 H80 stroke=#1a1a1a stroke-width=5svg`,
-          type Groove,
-          awsRef A2.42020, 7.3.5,
-          certLevel 4G
-        }
-      ],
-      spot [
-        {
-          title Spot Spark,
-          icon `svg class=weld-symbol viewBox=0 0 100 100circle cx=50 cy=80 r=10 fill=#1a1a1apath d=M20 80 H80 stroke=#1a1a1a stroke-width=5svg`,
-          type Spot,
-          awsRef A2.42020, 7.5,
-          certLevel 1G
-        },
-        {
-          title Projection Flash,
-          icon `svg class=weld-symbol viewBox=0 0 100 100circle cx=50 cy=80 r=10 fill=#1a1a1apath d=M20 80 H80 stroke=#1a1a1a stroke-width=5path d=M50 70 V60 stroke=#1a1a1a stroke-width=5svg`,
-          type Spot,
-          awsRef A2.42020, 7.5.3,
-          certLevel 2G
-        }
-      ],
-      plug [
-        {
-          title Plug Pop,
-          icon `svg class=weld-symbol viewBox=0 0 100 100rect x=40 y=70 width=20 height=20 fill=#1a1a1apath d=M20 80 H80 stroke=#1a1a1a stroke-width=5svg`,
-          type Plug,
-          awsRef A2.42020, 7.6,
-          certLevel 1G
-        },
-        {
-          title Slot Slam,
-          icon `svg class=weld-symbol viewBox=0 0 100 100rect x=30 y=70 width=40 height=20 fill=#1a1a1apath d=M20 80 H80 stroke=#1a1a1a stroke-width=5svg`,
-          type Plug,
-          awsRef A2.42020, 7.6,
-          certLevel 2G
-        }
-      ],
-      seam [
-        {
-          title Seam Sizzle,
-          icon `svg class=weld-symbol viewBox=0 0 100 100path d=M30 80 Q50 60 70 80 stroke=#1a1a1a stroke-width=5 fill=nonepath d=M20 80 H80 stroke=#1a1a1a stroke-width=5svg`,
-          type Seam,
-          awsRef A2.42020, 7.7,
-          certLevel 1G
-        },
-        {
-          title Intermittent Seam,
-          icon `svg class=weld-symbol viewBox=0 0 100 100path d=M30 80 Q40 60 50 80 M60 80 Q70 60 80 80 stroke=#1a1a1a stroke-width=5 fill=nonepath d=M20 80 H80 stroke=#1a1a1a stroke-width=5svg`,
-          type Seam,
-          awsRef A2.42020, 7.7,
-          certLevel 2G
-        }
-      ],
-      stud [
-        {
-          title Stud Strike,
-          icon `svg class=weld-symbol viewBox=0 0 100 100circle cx=50 cy=80 r=5 fill=#1a1a1apath d=M50 80 V60 stroke=#1a1a1a stroke-width=5path d=M20 80 H80 stroke=#1a1a1a stroke-width=5svg`,
-          type Stud,
-          awsRef A2.42020, 7.8,
-          certLevel 1G
-        },
-        {
-          title Field Stud,
-          icon `svg class=weld-symbol viewBox=0 0 100 100circle cx=50 cy=80 r=5 fill=#1a1a1apath d=M50 80 V60 stroke=#1a1a1a stroke-width=5path d=M20 80 H80 stroke=#1a1a1a stroke-width=5path d=M50 100 L40 90 M50 100 L60 90 stroke=#1a1a1a stroke-width=5svg`,
-          type Stud,
-          awsRef A2.42020, 7.8, 8.2.2,
-          certLevel 2G
-        }
-      ],
-      backgrinding [
-        {
-          title Grind Blitz,
-          icon `svg class=weld-symbol viewBox=0 0 100 100path d=M20 80 H80 stroke=#1a1a1a stroke-width=5path d=M30 70 Q50 50 70 70 stroke=#1a1a1a stroke-width=5 fill=nonesvg`,
-          type Back Grinding,
-          awsRef D1.12020, 6.2.2,
-          certLevel 3G
-        },
-        {
-          title Surface Prep Smash,
-          icon `svg class=weld-symbol viewBox=0 0 100 100path d=M20 80 H80 stroke=#1a1a1a stroke-width=5path d=M30 70 Q50 50 70 70 stroke=#1a1a1a stroke-width=5 fill=nonepath d=M40 65 Q50 45 60 65 stroke=#1a1a1a stroke-width=5 fill=nonesvg`,
-          type Back Grinding,
-          awsRef D1.12020, 6.2.2,
-          certLevel 4G
-        }
-      ],
-      backgouging [
-        {
-          title Gouge Blast,
-          icon `svg class=weld-symbol viewBox=0 0 100 100path d=M20 80 H80 stroke=#1a1a1a stroke-width=5path d=M30 70 C50 40 70 70 70 70 stroke=#1a1a1a stroke-width=5 fill=nonesvg`,
-          type Back Gouging,
-          awsRef D1.12020, 6.2.3,
-          certLevel 3G
-        },
-        {
-          title Root Clear Crush,
-          icon `svg class=weld-symbol viewBox=0 0 100 100path d=M20 80 H80 stroke=#1a1a1a stroke-width=5path d=M30 70 C50 40 70 70 70 70 stroke=#1a1a1a stroke-width=5 fill=nonepath d=M40 65 C50 35 60 65 60 65 stroke=#1a1a1a stroke-width=5 fill=nonesvg`,
-          type Back Gouging,
-          awsRef D1.12020, 6.2.3,
-          certLevel 4G
-        }
-      ]
+  <script>
+    const state = {
+      score: 0,
+      time: 60,
+      level: 1,
+      certLevel: "1G",
+      isPlaying: false,
+      timer: null,
+      scoreHistory: []
     };
 
-    const certLevels = {
-      1 1G,
-      2 2G,
-      3 3G,
-      4 4G
-    };
-
-    let state = {
-      score 0,
-      time 60,
-      level 1,
-      currentDoc null,
-      isPlaying false,
-      timer null,
-      attempts 0,
-      scoreHistory [],
-      correctAnswers 0,
-      totalQuestions 0,
-      certLevel 1G
-    };
-
-    const cabinets = document.querySelectorAll('.cabinet');
-    const doc = document.getElementById('document');
-    const docArea = document.getElementById('document-area');
-    const feedback = document.getElementById('feedback');
-    const chartCanvas = document.getElementById('scoreChart');
-    const leaderboardBody = document.getElementById('leaderboard-body');
-    const initialsInput = document.getElementById('initials-input');
-    const playerInitials = document.getElementById('player-initials');
-    let chartInstance = null;
-
-     Replace with your API Gateway endpoint after deployment
-    const API_URL = 'httpsyour-api-id.execute-api.us-east-1.amazonaws.comprod';
-
-     Initialize Chart.js
-    function initChart() {
-      chartInstance = new Chart(chartCanvas, {
-        type 'line',
-        data {
-          labels [],
-          datasets [{
-            label 'Score Progress',
-            data [],
-            borderColor '#00ddeb',
-            backgroundColor 'rgba(0, 221, 235, 0.3)',
-            fill true,
-            tension 0.4
-          }]
-        },
-        options {
-          responsive true,
-          plugins {
-            legend { position 'top', labels { font { family 'Press Start 2P', cursive, size 12 } } },
-            title { display true, text 'Score Progress', font { family 'Press Start 2P', cursive, size 14 }, color '#ffd700' }
-          },
-          scales {
-            x { title { display true, text 'Attempts', font { family 'Press Start 2P', cursive }, color '#fff' }, ticks { color '#fff' } },
-            y { title { display true, text 'Score', font { family 'Press Start 2P', cursive }, color '#fff' }, ticks { color '#fff' }, beginAtZero true }
-          }
-        }
-      });
-    }
-
-     Sound effects
-    const correctSound = new Audio('httpswww.soundjay.combuttonsarcade-beep-01.mp3');
-    const wrongSound = new Audio('httpswww.soundjay.combuttonsarcade-beep-02.mp3');
-    const levelUpSound = new Audio('httpswww.soundjay.commiscsoundscoin-01.mp3');
-
-     Fetch leaderboard
-    async function fetchLeaderboard() {
-      try {
-        const response = await fetch(`${API_URL}leaderboardtop10`, {
-          method 'GET',
-          headers { 'Content-Type' 'applicationjson' }
-        });
-        const data = await response.json();
-        updateLeaderboard(data);
-      } catch (error) {
-        console.error('Error fetching leaderboard', error);
-        leaderboardBody.innerHTML = 'trtd colspan=5Failed to load leaderboardtdtr';
-      }
-    }
-
-     Update leaderboard display
-    function updateLeaderboard(scores) {
-      leaderboardBody.innerHTML = '';
-      scores.forEach((entry, index) = {
-        const row = document.createElement('tr');
-        row.innerHTML = `
-          td${index + 1}td
-          td${entry.initials}td
-          td${entry.score}td
-          td${entry.accuracy}%td
-          td${entry.certLevel}td
-        `;
-        leaderboardBody.appendChild(row);
-      });
-    }
-
-     Check if score qualifies for leaderboard
-    function checkLeaderboard(score, accuracy, certLevel) {
-      fetchLeaderboard().then(() = {
-        if (state.attempts === 0) return;
-        initialsInput.style.display = 'block';
-        feedback.textContent = `🌟 New High Score! Cert ${certLevel}. Enter Initials`;
-        playerInitials.focus();
-      });
-    }
-
-     Submit score to leaderboard
-    async function submitScore() {
-      const initials = playerInitials.value.trim().toUpperCase();
-      if (initials.length  3  initials.length  4) {
-        feedback.textContent = '⚠️ Initials must be 3-4 characters!';
-        return;
-      }
-      try {
-        const accuracy = state.totalQuestions  0  ((state.correctAnswers  state.totalQuestions)  100).toFixed(1)  0;
-        const response = await fetch(`${API_URL}leaderboardscore`, {
-          method 'POST',
-          headers { 'Content-Type' 'applicationjson' },
-          body JSON.stringify({
-            initials initials,
-            score state.score,
-            accuracy accuracy,
-            certLevel state.certLevel
-          })
-        });
-        if (response.ok) {
-          feedback.textContent = '🎉 Score Submitted!';
-          initialsInput.style.display = 'none';
-          playerInitials.value = '';
-          fetchLeaderboard();
-        } else {
-          feedback.textContent = '⚠️ Failed to submit score!';
-        }
-      } catch (error) {
-        console.error('Error submitting score', error);
-        feedback.textContent = '⚠️ Error submitting score!';
-      }
-    }
+    const ctx = document.getElementById('scoreChart').getContext('2d');
+    let chart;
 
     function startGame() {
       state.score = 0;
-      state.level = 1;
       state.time = 60;
-      state.attempts = 0;
-      state.scoreHistory = [];
-      state.correctAnswers = 0;
-      state.totalQuestions = 0;
-      state.certLevel = 1G;
+      state.level = 1;
+      state.certLevel = "1G";
       state.isPlaying = true;
+      document.getElementById("doc-title").textContent = "🧾 Match the Symbol!";
       updateStats();
-      nextDocument();
       initChart();
-      fetchLeaderboard();
-      feedback.textContent = 🚀 Let's Weld!;
-      initialsInput.style.display = 'none';
+      document.getElementById("feedback").textContent = "🚀 Game Started!";
 
       if (state.timer) clearInterval(state.timer);
-      state.timer = setInterval(() = {
-        if (state.time = 0) {
+      state.timer = setInterval(() => {
+        if (state.time <= 0) {
           endGame();
           return;
         }
@@ -762,43 +162,35 @@ div
     }
 
     function pauseGame() {
-      state.isPlaying = !state.isPlaying;
-      if (!state.isPlaying) {
+      if (state.isPlaying) {
         clearInterval(state.timer);
-        feedback.textContent = ⏸️ Game Paused;
-        feedback.className = feedback;
+        document.getElementById("feedback").textContent = "⏸️ Paused";
       } else {
-        feedback.textContent = 🔥 Back in Action!;
-        state.timer = setInterval(() = {
-          if (state.time = 0) {
-            endGame();
-            return;
-          }
-          state.time--;
-          updateStats();
-        }, 1000);
+        startGame();
       }
+      state.isPlaying = !state.isPlaying;
     }
 
     function resetGame() {
       clearInterval(state.timer);
-      state.isPlaying = false;
       state.score = 0;
-      state.level = 1;
       state.time = 60;
-      state.attempts = 0;
-      state.scoreHistory = [];
-      state.correctAnswers = 0;
-      state.totalQuestions = 0;
-      state.certLevel = 1G;
+      state.level = 1;
+      state.certLevel = "1G";
+      state.isPlaying = false;
       updateStats();
-      updateChart();
-      feedback.textContent = ;
-      document.getElementById('doc-icon').innerHTML = 'svg class=weld-symbol viewBox=0 0 100 100rect x=20 y=20 width=60 height=60 fill=none stroke=#1a1a1a stroke-width=5svg';
-      document.getElementById('doc-title').textContent = Press Start to Play!;
-      document.getElementById('doc-type').textContent = ;
-      initialsInput.style.display = 'none';
-      fetchLeaderboard();
+      document.getElementById("feedback").textContent = "🔁 Game Reset!";
+      document.getElementById("doc-title").textContent = "Press Start to Play!";
+      if (chart) {
+        chart.destroy();
+        chart = null;
+      }
+    }
+
+    function endGame() {
+      clearInterval(state.timer);
+      state.isPlaying = false;
+      document.getElementById("feedback").textContent = `🏁 Game Over! Final Score: ${state.score}`;
     }
 
     function updateStats() {
@@ -808,113 +200,33 @@ div
       document.getElementById('cert').textContent = state.certLevel;
     }
 
-    function updateChart() {
-      if (chartInstance) {
-        chartInstance.data.labels = Array.from({ length state.attempts }, (_, i) = i + 1);
-        chartInstance.data.datasets[0].data = state.scoreHistory;
-        chartInstance.update();
-      }
+    function initChart() {
+      chart = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: [],
+          datasets: [{
+            label: 'Score Over Time',
+            data: [],
+            borderColor: '#00ddeb',
+            backgroundColor: 'rgba(0,221,235,0.2)',
+            tension: 0.4,
+            fill: true
+          }]
+        },
+        options: {
+          responsive: true,
+          scales: {
+            x: { ticks: { color: '#fff' }, title: { display: true, text: 'Seconds', color: '#fff' }},
+            y: { ticks: { color: '#fff' }, title: { display: true, text: 'Score', color: '#fff' }}
+          },
+          plugins: {
+            legend: { labels: { color: '#fff' }},
+            title: { display: true, text: 'Score Chart', color: '#ffd700' }
+          }
+        }
+      });
     }
-
-    function nextDocument() {
-      const keys = Object.keys(weldingTypes).filter(key = {
-        const cert = weldingTypes[key][0].certLevel;
-        const levelIndex = Object.values(certLevels).indexOf(state.certLevel) + 1;
-        return certLevels[levelIndex]  cert = certLevels[levelIndex]  true;
-      });
-      const randomType = keys[Math.floor(Math.random()  keys.length)];
-      const options = weldingTypes[randomType];
-      const docObj = options[Math.floor(Math.random()  options.length)];
-
-      state.currentDoc = { ...docObj, correctType randomType };
-      document.getElementById('doc-icon').innerHTML = docObj.icon;
-      document.getElementById('doc-title').textContent = docObj.title;
-      document.getElementById('doc-type').textContent = `${docObj.type} (AWS ${docObj.awsRef}, ${docObj.certLevel})`;
-      state.totalQuestions++;
-    }
-
-    cabinets.forEach(cab = {
-      cab.addEventListener('click', () = {
-        if (!state.isPlaying) return;
-        const selected = cab.dataset.type;
-        handleAnswer(selected);
-      });
-
-      cab.addEventListener('dragover', e = {
-        e.preventDefault();
-        if (state.isPlaying) cab.classList.add('drag-over');
-      });
-
-      cab.addEventListener('dragleave', () = {
-        cab.classList.remove('drag-over');
-      });
-
-      cab.addEventListener('drop', e = {
-        e.preventDefault();
-        cab.classList.remove('drag-over');
-        if (!state.isPlaying) return;
-        const selected = cab.dataset.type;
-        handleAnswer(selected);
-      });
-    });
-
-    doc.addEventListener('dragstart', (e) = {
-      if (!state.isPlaying) {
-        e.preventDefault();
-        return;
-      }
-      doc.classList.add('dragging');
-    });
-
-    doc.addEventListener('dragend', () = {
-      doc.classList.remove('dragging');
-    });
-
-    docArea.addEventListener('dragover', e = e.preventDefault());
-    docArea.addEventListener('drop', e = {
-      e.preventDefault();
-      docArea.classList.remove('drag-over');
-    });
-
-    function handleAnswer(type) {
-      state.attempts++;
-      const points = state.currentDoc.certLevel === 4G  20  state.currentDoc.certLevel === 3G  15  10;
-      if (type === state.currentDoc.correctType) {
-        state.score += points;
-        state.correctAnswers++;
-        feedback.textContent = `🎉 Nailed It! (${state.currentDoc.type}, AWS ${state.currentDoc.awsRef}, ${state.currentDoc.certLevel})`;
-        feedback.className = feedback correct;
-        correctSound.play().catch(() = {});
-      } else {
-        state.score = Math.max(0, state.score - 5);
-        feedback.textContent = `💥 Oof! Should be ${state.currentDoc.type} (AWS ${state.currentDoc.awsRef}, ${state.currentDoc.certLevel})`;
-        feedback.className = feedback wrong;
-        wrongSound.play().catch(() = {});
-      }
-
-      state.scoreHistory.push(state.score);
-      if (state.score = state.level  100) {
-        state.level++;
-        state.certLevel = certLevels[state.level]  4G;
-        state.time += 15;
-        feedback.textContent += ` 🌟 Level Up to ${state.level} (${state.certLevel})!`;
-        levelUpSound.play().catch(() = {});
-      }
-
-      updateStats();
-      updateChart();
-      nextDocument();
-    }
-
-    function endGame() {
-      clearInterval(state.timer);
-      state.isPlaying = false;
-      const accuracy = state.totalQuestions  0  ((state.correctAnswers  state.totalQuestions)  100).toFixed(1)  0;
-      feedback.textContent = `🏆 Game Over! Score ${state.score}  Accuracy ${accuracy}%  Cert ${state.certLevel}`;
-      document.getElementById('doc-title').textContent = Press Start to Play Again!;
-      document.getElementById('doc-type').textContent = ;
-      document.getElementById('doc-icon').innerHTML = 'svg class=weld-symbol viewBox=0 0 100 100rect x=20 y=20 width=60 height=60 fill=none stroke=#1a1a1a stroke-width=5svg';
-      checkLeaderboard(state.score, accuracy, state.certLevel);
-    }
-  
-(function(){function c(){var b=a.contentDocumenta.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML=window.__CF$cv$params={r'9651b0aaf9d6cb93',t'MTc1MzUwOTc2Ni4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='cdn-cgichallenge-platformscriptsjsdmain.js';document.getElementsByTagName('head')[0].appendChild(a);;b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechangefunction(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();
+  </script>
+</body>
+</html>
